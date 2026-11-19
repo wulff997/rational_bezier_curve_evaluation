@@ -29,3 +29,10 @@ This library exists to evaluate rational Bezier and NURBS curves without pulling
 ## Edge cases you will hit
 
 A zero weight at an endpoint produces a `0/0` collapse. The implementation resolves this by returning the surviving (finite) weighted control point, so a curve that starts or ends at a zero-weight control point clamps to the opposite control point rather than returning `NaN`. Zero weights at interior control points are handled naturally by the separate numerator/denominator passes. Callers who depend on a different convention for singular weights should post-process the result themselves.
+
+## Performance
+
+The window keeps a bounded buffer, so `push` is constant time and memory does not
+grow with the length of the stream. `peak` and `trough` are linear in the window
+size, which is the trade that keeps `push` cheap.
+
